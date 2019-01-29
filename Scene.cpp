@@ -8,18 +8,13 @@ using namespace std;
 namespace Wolverine
 {
 	
-	SceneObject & Scene::GetCamera()
+	void Scene::setCamera(SceneObject &camera)
 	{
-		return *m_Camera;
-	}
-
-	void Scene::SetCamera(SceneObject &camera)
-	{
-		ASSERT(camera.FindComponent<CameraComp>(), "No camera component found!");
+		ASSERT(camera.findComponent<CameraComp>(), "No camera component found!");
 		m_Camera = &camera;
 	}
 
-	bool Scene::AddSceneObject(SceneObject &sceneObj)
+	bool Scene::addSceneObject(SceneObject &sceneObj)
 	{
 		auto it = find(m_SceneObjects.begin(), m_SceneObjects.end(), &sceneObj);
 		if (m_SceneObjects.end() == it)
@@ -33,7 +28,7 @@ namespace Wolverine
 		}
 	}
 
-	bool Scene::RemoveSceneObject(SceneObject &sceneObj)
+	bool Scene::removeSceneObject(SceneObject &sceneObj)
 	{
 		auto it = find(m_SceneObjects.begin(), m_SceneObjects.end(), &sceneObj);
 		if (m_SceneObjects.end() != it)
@@ -48,14 +43,14 @@ namespace Wolverine
 		}
 	}
 
-	void Scene::Render()
+	void Scene::render(IRenderer& renderer)
 	{
 		for (auto &sceneObj : m_SceneObjects)
 		{
-			ModelComp *modelComp = sceneObj->FindComponent<ModelComp>();
+			ModelComp *modelComp = sceneObj->findComponent<ModelComp>();
 			if (nullptr != modelComp)
 			{
-				modelComp->render();
+				modelComp->render(renderer);
 			}
 		}
 	}

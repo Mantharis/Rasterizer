@@ -5,12 +5,12 @@ using namespace Wolverine;
 using namespace std;
 
 
-void ModelComp::render()
+void ModelComp::render(IRenderer &renderer)
 {
 	for (auto &visual : m_Visuals)
 	{
 		ASSERT(m_Owner != nullptr, "Owner is null!");
-		visual->render(m_Owner->GetMatrix());
+		visual->render(renderer, m_Owner->getMatrix());
 	}
 }
 

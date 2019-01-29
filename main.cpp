@@ -114,79 +114,140 @@ void rasterize(Vec3f const &vertex0, Vec3f const &vertex1, Vec3f const &vertex2,
 
 using namespace std::chrono;
 
+void initScene(Scene &scene)
+{
+	static unique_ptr<SharedMeshData> modelData = ModelLoader::LoadMeshDataFromFile("c:/Wolverine/Models/Desk.obj");
+
+	static SceneObject sceneObj;
+	sceneObj.setPos(Vec3f(0.0f, 0.0f, -10.0f));
+	sceneObj.scale(0.1f);
+	sceneObj.addComponent(ModelLoader::CreateModelComp(*modelData));
+	scene.addSceneObject(sceneObj);
+
+	static SceneObject sceneObj2;
+	sceneObj2.setPos(Vec3f(0.0f, 5.0f, -10.0f));
+	sceneObj2.scale(0.1f);
+	sceneObj2.addComponent(ModelLoader::CreateModelComp(*modelData));
+	scene.addSceneObject(sceneObj2);
+
+	static SceneObject sceneObj3;
+	sceneObj3.setPos(Vec3f(0.0f, 10.0f, -10.0f));
+	sceneObj3.scale(0.1f);
+	sceneObj3.addComponent(ModelLoader::CreateModelComp(*modelData));
+	scene.addSceneObject(sceneObj3);
+}
+
+
+void initSceneWithCube(Scene &scene)
+{
+	static unique_ptr<SharedMeshData> modelData = make_unique<SharedMeshData>();
+	modelData->iData = { 
+						0,1,2,0,2,3,	//positive Z
+						4,7,6,4,6,5,	//negative Z
+						6,7,3,6,3,2,	//positive X
+						0,4,5,0,5,1,	//negative X
+						4,0,3,4,3,7,	//postive Y
+						1,5,6,1,6,2,	//negative y
+						};
+
+
+	modelData->vData = {
+		{ Vec4f(-1.0f,1.0f, 1.0f, 1.0f), Vec2f(0.0f,0.0f) },
+		{ Vec4f(-1.0f,-1.0f, 1.0f, 1.0f), Vec2f(1.0f,0.0f) },
+		{ Vec4f(1.0f,-1.0f, 1.0f, 1.0f), Vec2f(1.0f,1.0f) },
+		{ Vec4f(1.0f,1.0f, 1.0f, 1.0f), Vec2f(0.0f,1.0f) },
+
+		{ Vec4f(-1.0f,1.0f, -1.0f, 1.0f), Vec2f(0.0f,0.0f) },
+		{ Vec4f(-1.0f,-1.0f, -1.0f, 1.0f), Vec2f(1.0f,0.0f) },
+		{ Vec4f(1.0f,-1.0f, -1.0f, 1.0f), Vec2f(1.0f,1.0f) },
+		{ Vec4f(1.0f,1.0f, -1.0f, 1.0f), Vec2f(0.0f,1.0f) }
+
+
+
+	};
+
+
+	/*
+	modelData->vData = {
+	{ Vec4f(-11.0f,10.0f, -20.0f, 1.0f), Vec2f(0.0f,0.0f) },
+	{ Vec4f(-10.0f,0.0f, -20.0f, 1.0f), Vec2f(0.0f,1.0f) },
+	{ Vec4f(10.0f,0.0f, -20.0f, 1.0f), Vec2f(1.0f,1.0f) }
+
+	};
+	*/
+
+	static SceneObject sceneObj;
+	sceneObj.setPos(Vec3f(0.0f, -5.0f, -10.0f));
+	sceneObj.scale(1.0f);
+	sceneObj.addComponent(ModelLoader::CreateModelComp(*modelData));
+	scene.addSceneObject(sceneObj);
+}
+
+void initSceneWithTestingTriangle(Scene &scene)
+{
+	static unique_ptr<SharedMeshData> modelData = make_unique<SharedMeshData>();
+	modelData->iData = { 0,1,2 };
+
+	/*
+	modelData->vData = {
+		{ Vec4f(0.0f,0.1f, 10.0f, 1.0f), Vec2f(0.0f,0.0f) },
+		{ Vec4f(0.0f,0.1f, -10.0f, 1.0f), Vec2f(1.0f,0.0f) },
+		{ Vec4f(-1.0f,0.1f, -10.0f, 1.0f), Vec2f(0.0f,1.0f) }
+
+	};
+	*/
+	
+	
+	modelData->vData = {
+		{ Vec4f(-11.0f,10.0f, -20.0f, 1.0f), Vec2f(0.0f,0.0f) },
+		{ Vec4f(-10.0f,0.0f, -20.0f, 1.0f), Vec2f(0.0f,1.0f) },
+		{ Vec4f(10.0f,0.0f, -20.0f, 1.0f), Vec2f(1.0f,1.0f) }
+
+	};
+	
+
+	static SceneObject sceneObj;
+	sceneObj.setPos(Vec3f(0.0f, 0.0f, 0.0f));
+	sceneObj.scale(1.0f);
+	sceneObj.addComponent(ModelLoader::CreateModelComp(*modelData));
+	scene.addSceneObject(sceneObj);
+}
+
 int main(int argc, char *argv[])
 {
 	Scene scene;
 	Window window("Wolverine", 1024, 768);
-	BasicRenderer renderer(window.GetCanvas(), scene);
+	BasicRenderer renderer(window.getCanvas());
 
-	/*
-	//TESTING ONLY
-	unique_ptr<SharedVisualData> modelData = make_unique<SharedVisualData>();
-	modelData->iData = { 0,1,2 };
-	modelData->vData = { 
-		{Vec4f(0.0f,-10.0f, 0.0f, 1.0f), Vec2f(0.0f,0.0f)},
-		{Vec4f(10.0f,10.0f, 0.0f, 1.0f), Vec2f(0.0f,0.0f)},
-		{Vec4f(-10.0f,10.0f, 0.0f, 1.0f), Vec2f(0.0f,0.0f)}
-		 
-	};
-	*/
+	Mat4x4f projectionMatrix;
+	setProjectionMatrix(1.0f, 100.0f, -1.0f /*from camera space its negative right*/, (float)window.getCanvas().getHeight() / window.getCanvas().getWidth(), projectionMatrix);
+	renderer.setProjMatrix(projectionMatrix);
 	
-	unique_ptr<SharedVisualData> modelData = ModelLoader::LoadModelData("c:/Wolverine/Models/Desk.obj");
-	 
+	Mat4x4f viewportMatrix;
+	setViewportMatrix(window.getCanvas().getWidth(), window.getCanvas().getHeight(), viewportMatrix);
+	renderer.setViewportMatrix(viewportMatrix);
+
+	//TESTING ONLY
+	//initSceneWithTestingTriangle(scene);
+	initSceneWithCube(scene);
+	//initScene(scene);
+
+
 	SceneObject camera;
-	camera.SetDir(Vec3f(0.0f, 0.0f, -1.0f));
-	camera.SetPos(Vec3f(0.0f, 0.0f, 0.0f));
-	camera.AddComponent(make_unique<CameraComp>());
+	camera.setDir(Vec3f(0.0f, 0.0f, -1.0f));
+	camera.setPos(Vec3f(0.0f, 0.0f, 0.0f));
+	camera.addComponent(make_unique<CameraComp>());
 
-	SceneObject sceneObj;
-	sceneObj.SetPos(Vec3f(0.0f, 0.0f, -10.0f));
-	sceneObj.Scale(0.1f);
-	sceneObj.AddComponent(ModelLoader::CreateModelComp(*modelData, renderer));
-
-	scene.AddSceneObject(sceneObj);
-	scene.SetCamera(camera);
-
-	//transform by model matrix
-	//Mat4x4f modelMatrix = getMatrix(Vec3f(0.0f, 0.0f, 50.0f), Vec3f(0.0f, 90.0f, 0.0f), 0.1f);
-
-
-	////////////////////////////
-	//TEST
-	/*
-	VertexData v[3];
-	v[0].pos = Vec4f(-1.0f, -1.0f, 0.0f, 1.0f);
-	v[0].customData.texCoord = Vec2f(0, 0);
-
-	v[1].pos = Vec4f(1.0f, -1.0f, 0.0f, 1.0f);
-	v[1].customData.texCoord = Vec2f(1.0f, 0);
-
-	v[2].pos = Vec4f(0.0f, 1.0f, 0.0f, 1.0f);
-	v[2].customData.texCoord = Vec2f(0.5f, 1.0f);
-
-
-	vData = { v[0], v[1], v[2] };
-	iData = { 0,1,2 };
-	modelMatrix = getMatrix(Vec3f(0.0f, 0.0f, 2.0f), Vec3f(0.0f, 0.0f, 0.0f), 5.0f);
-	*/
-	//END TEST
-	////////////////////////////////
-
-
-	SDL_Event sdlEvent;
+	scene.setCamera(camera);
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 	SDL_ShowCursor(0);
-	
 
-	vector<Vec3f> buffer;
-	buffer.resize(1024 * 768);
-
-	high_resolution_clock::time_point start = high_resolution_clock::now();
-	size_t fps = 0;
-
+	float const mouseSensitivity = 0.2f;
 	while (true) 
 	{
+		SDL_Event sdlEvent;
+
 		//If there's an event to handle
 		if (SDL_PollEvent(&sdlEvent))
 		{
@@ -199,27 +260,27 @@ int main(int argc, char *argv[])
 				switch (sdlEvent.key.keysym.sym)
 				{
 				case SDLK_a:
-					camera.Move(Vec3f(-0.1f, 0.0f, 0.0f));
+					camera.move(Vec3f(0.1f, 0.0f, 0.0f));
 					break;
 
 				case SDLK_d:
-					camera.Move(Vec3f(0.1f, 0.0f, 0.0f));
+					camera.move(Vec3f(-0.1f, 0.0f, 0.0f));
 					break;
 
 				case SDLK_w:
-					camera.Move(Vec3f(0.0f, 0.0f, 0.1f));
+					camera.move(Vec3f(0.0f, 0.0f, 0.1f));
 					break;
 
 				case SDLK_s:
-					camera.Move(Vec3f(0.0f, 0.0f, -0.1f));
+					camera.move(Vec3f(0.0f, 0.0f, -0.1f));
 					break;
 
 				case SDLK_q:
-					camera.Move(Vec3f(0.0f, -0.1f, 0.0f));
+					camera.move(Vec3f(0.0f, 0.1f, 0.0f));
 					break;
 
 				case SDLK_e:
-					camera.Move(Vec3f(0.0f, 0.1f, 0.0f));
+					camera.move(Vec3f(0.0f, -0.1f, 0.0f));
 					break;
 
 				case SDLK_ESCAPE:
@@ -229,42 +290,21 @@ int main(int argc, char *argv[])
 				break;
 
 			case SDL_MOUSEMOTION:
-				camera.Rotate(Vec2f(sdlEvent.motion.xrel, -sdlEvent.motion.yrel) * 0.2f);
+				camera.rotate(Vec2f( sdlEvent.motion.yrel, -sdlEvent.motion.xrel) * mouseSensitivity);
 				break;
 
 			}
 		}
 		
+		renderer.setViewMatrix(camera.findComponent<CameraComp>()->getViewMatrix());
 
-		//================
-		/*
-		static Vec3f v0 = { -2000.0f, -2000.0, 10.0 };
-		static Vec3f v1 = { 2000.0f, -2000.0, 10.0 };
-		static Vec3f v2 = { 0.0f, 2000.0, 10.0 };
-
-		rasterize(v0, v2, v1, buffer);
-		++fps;
-
-		high_resolution_clock::time_point now = high_resolution_clock::now();
-		auto timeDiff = duration_cast<microseconds>(now - start).count();
-
+		renderer.frameBegin();
 		
+		scene.render(renderer);
 
-		static const long oneSecond = 1000000;
-		if (timeDiff >= oneSecond)
-		{
+		renderer.frameEnd();
 
-			cout << fps << " ";
-			
-			fps = 0;
-			start = now;
-		}
-		*/
-		
-		
-		
-		scene.Render();
-		window.Update();
+		window.update();
 
 	}
 

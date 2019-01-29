@@ -10,7 +10,7 @@ namespace Wolverine
 	class CameraComp : public IComponent
 	{
 	public:
-		Mat4x4f GetViewMatrix(SceneObject const &sceneObj) const;
+		Mat4x4f getViewMatrix() const;
 	};
 
 }

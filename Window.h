@@ -13,32 +13,31 @@ namespace Wolverine
 {
 
 
-
 	class SdlCanvas
 	{
 	public:
 		SdlCanvas(SDL_Surface &sdlSurface);
 
-		unsigned int GetWidth();
-		unsigned int GetHeight();
-		void Clear();
-		void Lock();
-		void Unlock();
-		void Write(unsigned int x, unsigned int y, float red, float green, float blue);
+		size_t getWidth();
+		size_t getHeight();
+		void clear();
+		void lock();
+		void unlock();
+		void write(size_t x, size_t y, uint8_t red, uint8_t green, uint8_t blue);
 	private:
 		SDL_Surface *m_Surface;
 	};
 
 
-	__forceinline void SdlCanvas::SdlCanvas::Write(unsigned int x, unsigned int y, float red, float green, float blue)
+	__forceinline void SdlCanvas::SdlCanvas::write(size_t x, size_t y, uint8_t red, uint8_t green, uint8_t blue)
 	{
 		ASSERT(x < m_Surface->w && y < m_Surface->h, "Index is out of range");
 
 		uint8_t *target_pixel = (uint8_t *)m_Surface->pixels + y * m_Surface->pitch + x * 4;
 
-		target_pixel[2] = (uint8_t)(red);
-		target_pixel[1] = (uint8_t)(green);
-		target_pixel[0] = (uint8_t)(blue);
+		target_pixel[2] = red;
+		target_pixel[1] = green;
+		target_pixel[0] = blue;
 		target_pixel[3] = 255;
 	}
 
@@ -50,8 +49,8 @@ namespace Wolverine
 		Window(std::string const &title, int resX, unsigned int resY);
 		~Window();
 
-		void Update();
-		SdlCanvas& GetCanvas();
+		void update();
+		SdlCanvas& getCanvas();
 
 	private:
 		std::string m_Title;

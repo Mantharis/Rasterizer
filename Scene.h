@@ -3,6 +3,7 @@
 #include "MathHelper.h"
 #include <vector>
 #include "SceneObject.h"
+#include "Renderer.h"
 
 namespace Wolverine
 {
@@ -11,12 +12,11 @@ namespace Wolverine
 	class Scene
 	{
 	public:
-		bool AddSceneObject(SceneObject &sceneObj);
-		bool RemoveSceneObject(SceneObject &sceneObj);
-		void SetCamera(SceneObject &camera);
+		bool addSceneObject(SceneObject &sceneObj);
+		bool removeSceneObject(SceneObject &sceneObj);
+		void setCamera(SceneObject &camera);
 
-		void Render();
-		SceneObject & GetCamera();
+		void render(IRenderer &renderer);
 
 	private:
 		SceneObject *m_Camera;

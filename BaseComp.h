@@ -15,13 +15,16 @@ namespace Wolverine
 
 		IComponent() :m_Owner(nullptr) {};
 
+	protected:
+		SceneObject *m_Owner;
+
+	private:
+		friend class SceneObject;
 		void SetOwner(SceneObject *owner)
 		{
 			m_Owner = owner;
 		}
 
-	protected:
-		SceneObject *m_Owner;
 	};
 
 	

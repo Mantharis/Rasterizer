@@ -12,23 +12,19 @@ using namespace std;
 
 using namespace Wolverine;
 
-unique_ptr<ModelComp> ModelLoader::CreateModelComp(SharedVisualData const &visualData, IRenderer &renderer)
+unique_ptr<ModelComp> ModelLoader::CreateModelComp(SharedMeshData const &meshData)
 {
 	tinyobj::attrib_t attrib;
 	vector<tinyobj::shape_t> shapes;
 	vector<tinyobj::material_t> materials;
 
 	vector<unique_ptr<IVisual>> visuals;
-
-	unique_ptr<VisualData> visData = make_unique<VisualData>(visualData);
-
-	unique_ptr<Visual> visual = make_unique<Visual>(std::move(visData), renderer);
-	visuals.push_back(move(visual));
+	visuals.push_back(make_unique<Visual>(meshData));
 
 	return make_unique<ModelComp>(std::move(visuals));
 }
 
-unique_ptr<SharedVisualData> ModelLoader::LoadModelData(std::string const &path)
+unique_ptr<SharedMeshData> ModelLoader::LoadMeshDataFromFile(std::string const &path)
 {
 	tinyobj::attrib_t attrib;
 	vector<tinyobj::shape_t> shapes;
@@ -39,10 +35,10 @@ unique_ptr<SharedVisualData> ModelLoader::LoadModelData(std::string const &path)
 	
 	if (!ret)
 	{
-		return unique_ptr<SharedVisualData>(nullptr);
+		return unique_ptr<SharedMeshData>(nullptr);
 	}
 	
-	unique_ptr<SharedVisualData> visualData = make_unique<SharedVisualData>();
+	unique_ptr<SharedMeshData> meshData = make_unique<SharedMeshData>();
 
 	vector<Vec2f> texCoords;
 	vector<bool> usedCoordsMap;
@@ -55,7 +51,7 @@ unique_ptr<SharedVisualData> ModelLoader::LoadModelData(std::string const &path)
 
 		vertexData.pos.set(attrib.vertices[idx + 0], attrib.vertices[idx + 1], attrib.vertices[idx + 2], 1.0f);
 		
-		visualData->vData.push_back(vertexData);
+		meshData->vData.push_back(vertexData);
 	}
 
 	for (size_t idx = 0; idx < attrib.texcoords.size(); idx += 2)
@@ -67,11 +63,11 @@ unique_ptr<SharedVisualData> ModelLoader::LoadModelData(std::string const &path)
 	{
 		for (auto &index : shape.mesh.indices)
 		{
-			visualData->iData.push_back(index.vertex_index);
+			meshData->iData.push_back(index.vertex_index);
 
 			if (index.texcoord_index != -1)
 			{
-				visualData->vData[index.vertex_index].customData.texCoord = texCoords[index.texcoord_index];
+				meshData->vData[index.vertex_index].customData = texCoords[index.texcoord_index];
 			}
 		}
 
@@ -79,5 +75,5 @@ unique_ptr<SharedVisualData> ModelLoader::LoadModelData(std::string const &path)
 
 	ASSERT(0 == (visualData->iData.size() % 3), "3 indices per polygon are expected!");
 
-	return visualData;
+	return meshData;
 }

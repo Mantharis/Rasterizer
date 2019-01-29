@@ -12,44 +12,30 @@ SdlCanvas::SdlCanvas(SDL_Surface &sdlSurface) : m_Surface(&sdlSurface)
 {
 }
 
-unsigned int SdlCanvas::GetWidth()
+size_t SdlCanvas::getWidth()
 {
 	return m_Surface->w;
 }
 
-unsigned int SdlCanvas::GetHeight()
+size_t SdlCanvas::getHeight()
 {
 	return m_Surface->h;
 }
 
-void SdlCanvas::Clear()
+void SdlCanvas::clear()
 {
 	SDL_memset(m_Surface->pixels, 0, m_Surface->h * m_Surface->pitch);
 }
 
-void SdlCanvas::Lock()
+void SdlCanvas::lock()
 {
 	SDL_LockSurface(m_Surface);
 }
 
-void SdlCanvas::Unlock()
+void SdlCanvas::unlock()
 {
 	SDL_UnlockSurface(m_Surface);
 }
-
-/*
-void SdlCanvas::Write(unsigned int x, unsigned int y, float red, float green, float blue)
-{
-	ASSERT(x < m_Surface->w && y < m_Surface->h, "Index is out of range");
-
-	Uint8 *target_pixel = (Uint8 *)m_Surface->pixels + y * m_Surface->pitch + x * 4;
-
-	target_pixel[2] = (Uint8)(red);
-	target_pixel[1] = (Uint8)(green);
-	target_pixel[0] = (Uint8)(blue);
-	target_pixel[3] = 255;
-}
-*/
 
 
 Window::Window(std::string const &title, int resX, unsigned int resY)
@@ -83,12 +69,12 @@ Window::~Window()
 	SDL_DestroyWindow(m_Window);
 }
 
-SdlCanvas& Window::GetCanvas()
+SdlCanvas& Window::getCanvas()
 {
 	return *m_Canvas;
 }
 
-void Window::Update()
+void Window::update()
 {
 	++m_Fps;
 
@@ -104,7 +90,7 @@ void Window::Update()
 		double fps = ((double)m_Fps * oneSecond) / timeDiff;
 
 		std::stringstream caption;
-		caption << m_Title << " FPS=" << (int)fps;
+		caption << m_Title << " FPS=" << (unsigned int)fps;
 
 		SDL_SetWindowTitle(m_Window, caption.str().c_str());
 

@@ -7,6 +7,7 @@ namespace Wolverine
 
 	typedef gmtl::Vec<float, 2> Vec2f;
 	typedef gmtl::Vec<float, 3> Vec3f;
+	typedef gmtl::Vec<uint8_t, 3> Vec3b;
 	typedef gmtl::Vec<float, 4> Vec4f;
 	typedef gmtl::Matrix<float, 4, 4> Mat4x4f;
 	typedef gmtl::Quat<float> Quatf;

@@ -44,10 +44,10 @@ namespace Wolverine
 
 	void setProjectionMatrix(float near, float far, float right, float top, Mat4x4f &outMatrix)
 	{
+		//compared to OpenGL convetion my camera is looking in positive Z (in camera space) rather then negative Z
 		outMatrix.set(	near/right, 0.0f, 0.0f, 0.0f,
 						0.0f, near / top, 0.0f, 0.0f,
-						//0.0f, 0.0f, 1.0f, 1.0f, //TODO after dividing by w we always get z=1 ...that makes z test useless, fix that! 
-						0.0f, 0.0f, (far+near)/(far-near), (-2.0f * near * far)/(far-near), //TODO this line is different than whats on internet, I will think about it later
+						0.0f, 0.0f, (far+near)/(far-near), (-2.0f * near * far)/(far-near),
 						0.0f, 0.0f, 1.0f, 0.0f);
 	}
 

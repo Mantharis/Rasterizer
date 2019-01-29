@@ -16,25 +16,25 @@ namespace Wolverine
 
 	public:
 		
-		template <typename T> T* FindComponent() const;
-		void AddComponent(std::unique_ptr<IComponent> &&comp);
+		template <typename T> T* findComponent() const;
+		void addComponent(std::unique_ptr<IComponent> &&comp);
 
-		void SetPos(Vec3f const &pos);
-		void SetDir(Vec3f const &dir);
+		void setPos(Vec3f const &pos);
+		void setDir(Vec3f const &dir);
 
-		void Rotate(Vec2f const &rightUpOffset);
-		void Scale(float scale);
-		void Move(Vec3f const &rightUpDirOffset);
+		void rotate(Vec2f const &rightUpOffset);
+		void scale(float scale);
+		void move(Vec3f const &rightUpDirOffset);
 
-		Vec3f GetRight(bool normalize) const;
-		Vec3f GetUp(bool normalize) const;
-		Vec3f GetDir(bool normalize) const;
-		float GetScale() const;
+		Vec3f getRight(bool normalize) const;
+		Vec3f getUp(bool normalize) const;
+		Vec3f getDir(bool normalize) const;
+		float getScale() const;
 
-		Mat4x4f const & GetMatrix() const;
+		Mat4x4f const & getMatrix() const;
 	};
 
-	template <typename T> T* SceneObject::FindComponent() const
+	template <typename T> T* SceneObject::findComponent() const
 	{
 		for (auto &it : m_Components)
 		{

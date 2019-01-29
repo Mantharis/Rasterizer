@@ -12,69 +12,9 @@ namespace Wolverine
 		TCUSTOM customData;
 	};
 
-	struct CustomData
-	{
-		Vec2f texCoord;
-		//TODO add new per vertex attributes here
+	//pos.xyzw, texCoord.xy
+	typedef VertexDataBase<Vec4f, Vec2f> VertexData;
 
-		CustomData operator-(CustomData const &v) const
-		{
-			CustomData ret = *this;
-			ret -= v;
-			return ret;
-		}
-
-		CustomData& operator-=(CustomData const &v)
-		{
-			texCoord -= v.texCoord;
-
-			return *this;
-		}
-
-		CustomData operator+(CustomData const &v) const
-		{
-			CustomData ret = *this;
-			ret += v;
-			return ret;
-		}
-
-		CustomData& operator+=(CustomData const &v)
-		{
-			texCoord += v.texCoord;
-
-			return *this;
-		}
-
-
-		CustomData& operator*=(float const v)
-		{
-			texCoord *= v;
-
-			return *this;
-		}
-
-		CustomData operator*(float const v) const
-		{
-			CustomData ret = *this;
-			ret *= v;
-			return ret;
-		}
-
-		CustomData& operator/=(float const v)
-		{
-			texCoord /= v;
-
-			return *this;
-		}
-
-		CustomData operator/(float const v) const
-		{
-			CustomData ret = *this;
-			ret /= v;
-			return ret;
-		}
-	};
-
-	typedef VertexDataBase<Vec4f, CustomData> VertexData;
-
+	//[0] = TexCoordX, [1] = TexCoordY, [2] = depth
+	typedef Vec3f FragmentData;
 }

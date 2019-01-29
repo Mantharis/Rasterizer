@@ -17,7 +17,7 @@ namespace Wolverine
 	
 	public:
 		ModelComp(std::vector<std::unique_ptr<IVisual>> &&visuals);	
-		void render();
+		void render(IRenderer &renderer);
 	};
 }
 
