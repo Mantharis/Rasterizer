@@ -1,0 +1,10 @@
+file(GLOB SIMD_SRC
+    "${PROJECT_SOURCE_DIR}/SIMD/Base/*.h"
+    "/SSE/*.h"
+)
+
+set(WOLVERINE_SRC
+   ${WOLVERINE_SRC}
+   ${SIMD_SRC}
+   PARENT_SCOPE
+   )
